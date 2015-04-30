@@ -1,35 +1,22 @@
-#include <SoftPWM.h>
-
-const int peltier_out_pin = 13; // output pin to be PWMed
-
-int output_value = 128;        // value output to the PWM (analog out)
-
+const int peltier_hot_pin = 9;
+const int peltier_cold_pin = 10;
 
 void setup() {
   // initialize serial communications at 9600 bps for reporting to computer
   Serial.begin(9600); 
-  
-  // we need software pwm to pwm pin 13
-  SoftPWMBegin();
-  SoftPWMSet(peltier_out_pin, 0);
-  
 }
 
-void loop() {  
+void loop() {
+  // i wouldn't go above PWM 192 or so,
+  // otherwise the H bridge really starts to heat up
   
-  // do stuff here to calculate output_value
+  // heat up the labeled side
+  analogWrite(peltier_hot_pin, 192);
+  analogWrite(peltier_cold_pin, 0);
+  delay(5000);
   
-  // 0 <= output_value < 256
-  //SoftPWMSet(peltier_out_pin, output_value);
-  SoftPWMSet(peltier_out_pin, 0);
-  delay(6000);
-  SoftPWMSet(peltier_out_pin, 128);
-  delay(6000);
-  SoftPWMSet(peltier_out_pin, 192);
-  delay(6000);
-  SoftPWMSet(peltier_out_pin, 255);
-  delay(6000);
-  SoftPWMSet(peltier_out_pin, 0);
-  delay(6000);
-  
+  // cool the labeled side
+  analogWrite(peltier_hot_pin, 0);
+  analogWrite(peltier_cold_pin, 192);
+  delay(5000);
 }
